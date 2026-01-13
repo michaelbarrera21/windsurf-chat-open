@@ -1,0 +1,86 @@
+{
+  "name": "windsurf-chat-open",
+  "displayName": "WindsurfChatOpen",
+  "description": "开源版 WindsurfChat - 让 AI 停下来听你说话",
+  "version": "1.8.11",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nicepkg/windsurf-chat-open"
+  },
+  "publisher": "windsurf-chat-open",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "panel": [
+        {
+          "id": "windsurfChatOpenPanel",
+          "title": "ChatOpen-A",
+          "icon": "$(comment-discussion)"
+        },
+        {
+          "id": "windsurfChatOpenPanelB",
+          "title": "ChatOpen-B",
+          "icon": "$(comment-discussion)"
+        }
+      ]
+    },
+    "views": {
+      "windsurfChatOpenPanel": [
+        {
+          "type": "webview",
+          "id": "windsurfChatOpen.panel",
+          "name": "AI-A",
+          "icon": "$(comment-discussion)"
+        }
+      ],
+      "windsurfChatOpenPanelB": [
+        {
+          "type": "webview",
+          "id": "windsurfChatOpen.panelB",
+          "name": "AI-B",
+          "icon": "$(comment-discussion)"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "windsurfChatOpen.focus",
+        "title": "WindsurfChatOpen: 聚焦面板"
+      },
+      {
+        "command": "windsurfChatOpen.focusB",
+        "title": "WindsurfChatOpen: 聚焦面板 B"
+      },
+      {
+        "command": "windsurfChatOpen.setup",
+        "title": "WindsurfChatOpen: 初始化工作区"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "windsurfChatOpen.focus",
+        "key": "ctrl+shift+w",
+        "mac": "cmd+shift+w"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "npm run compile && npx @vscode/vsce package --out releases/"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.0.0"
+  }
+}
