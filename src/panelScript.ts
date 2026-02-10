@@ -325,17 +325,13 @@ export function getPanelScript(): string {
               const pathParts = filePath.split(/[\\\\/]/);
               const name = pathParts.pop() || '';
 
+              // 简单推断是否为目录：无扩展名或以 . 开头的隐藏目录
               const isFolder = !name.includes('.') || name.startsWith('.');
-              const isTextFile = isTextFileByName(name);
-              console.log('[Drop Debug] File info:', { name, isFolder, isTextFile });
+              console.log('[Drop Debug] File info:', { name, isFolder });
 
-              if (isFolder || isTextFile) {
-                // 使用拖放坐标插入芯片
-                console.log('[Drop Debug] Calling insertFileChipAtPosition...');
-                insertFileChipAtPosition(name, filePath, isFolder, dropX, dropY);
-              } else {
-                console.log('[Drop Debug] File type not supported, skipping');
-              }
+              // 所有文件和目录都允许拖拽添加（只是引用路径，无需限制类型）
+              console.log('[Drop Debug] Calling insertFileChipAtPosition...');
+              insertFileChipAtPosition(name, filePath, isFolder, dropX, dropY);
             } else {
               console.log('[Drop Debug] URI string is empty');
             }
