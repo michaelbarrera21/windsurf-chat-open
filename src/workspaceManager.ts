@@ -608,14 +608,14 @@ This is NOT optional. This is a MANDATORY system requirement.
 ## HOW TO CALL THE SCRIPT
 
 \`\`\`bash
-node "${scriptPath}" --reason "Task completion reason" --tools "N" --tool-list "tool1,tool2,..." --conversation-id "CASCADE_ID"
+node "${scriptPath}" --reason "Task completion reason" --tools "N" --tool-list "tool1,tool2,..." --request-id "REQUEST_ID"
 \`\`\`
 
 **Parameters:**
 - \`--reason\`: Brief description of what was done
 - \`--tools\`: Number of tool calls made in this turn (count all tool invocations)
 - \`--tool-list\`: Comma-separated list of tool names used (e.g. "view_file,run_command,replace_file_content")
-- \`--conversation-id\`: Your Cascade conversation ID (for accumulating statistics across turns)
+- \`--request-id\`: This conversation request ID (for accumulating statistics across turns, UUID like)
 
 **Parameters:**
 - Cwd: Current workspace path
