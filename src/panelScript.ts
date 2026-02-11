@@ -257,85 +257,89 @@ export function getPanelScript(): string {
       }
     });
 
-    // 拖拽文件/文件夹处理
+    // 支持的 URI 类型（按优先级排列）：
+    // - resourceurls: 编辑器 Tab 拖拽
+    // - application/vnd.code.uri-list: VS Code 专用 URI 列表
+    // - text/uri-list: Explorer 文件/文件夹拖拽
+    const URI_TYPES = ['resourceurls', 'application/vnd.code.uri-list', 'text/uri-list'];
+
+    // 从 URI 字符串解析文件路径并插入 chip
+    function handleUriDrop(uriString, dropX, dropY) {
+      if (!uriString) return;
+
+      // resourceurls 格式为 JSON 数组，如 ["file:///d:/path/to/file"]
+      // text/uri-list 格式为纯文本，每行一个 URI
+      let uris = [];
+      try {
+        const parsed = JSON.parse(uriString);
+        if (Array.isArray(parsed)) {
+          uris = parsed;
+        } else {
+          uris = [uriString.trim()];
+        }
+      } catch (e) {
+        // 非 JSON，按行分割处理
+        uris = uriString.trim().split(/\\r?\\n/).filter(l => l && !l.startsWith('#'));
+      }
+
+      for (const uri of uris) {
+        let filePath = (typeof uri === 'string' ? uri : '').trim();
+        if (!filePath) continue;
+
+        // 解析 file:// URI
+        if (filePath.startsWith('file:///')) {
+          filePath = filePath.substring(8);
+          if (!/^[a-zA-Z]:/.test(filePath)) {
+            filePath = '/' + filePath;
+          }
+        } else if (filePath.startsWith('file://')) {
+          filePath = filePath.substring(7);
+        }
+
+        filePath = decodeURIComponent(filePath);
+
+        const pathParts = filePath.split(/[\\\\\\/]/);
+        const name = pathParts.pop() || '';
+        const isFolder = !name.includes('.') || name.startsWith('.');
+
+        insertFileChipAtPosition(name, filePath, isFolder, dropX, dropY);
+      }
+    }
+
+    // 拖拽文件/文件夹/编辑器Tab处理
     inputText.addEventListener('drop', (e) => {
-      console.log('[Drop Debug] Drop event triggered');
       e.preventDefault();
       inputText.classList.remove('drag-over');
 
-      // 保存拖放位置的坐标
       const dropX = e.clientX;
       const dropY = e.clientY;
-      console.log('[Drop Debug] Drop position:', { dropX, dropY });
 
       const items = e.dataTransfer?.items;
-      console.log('[Drop Debug] DataTransfer items:', items ? items.length : 'null');
-      
-      if (!items || items.length === 0) {
-        console.log('[Drop Debug] No items in dataTransfer, exiting');
-        return;
-      }
+      if (!items || items.length === 0) return;
 
-      // 先打印所有 items 的信息
+      // 处理图片文件
       for (let i = 0; i < items.length; i++) {
-        console.log('[Drop Debug] Item ' + i + ':', {
-          kind: items[i].kind,
-          type: items[i].type
-        });
-      }
-
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-
-        // 处理图片文件
-        if (item.kind === 'file') {
-          const file = item.getAsFile();
-          console.log('[Drop Debug] File item:', file ? { name: file.name, type: file.type } : 'null');
+        if (items[i].kind === 'file') {
+          const file = items[i].getAsFile();
           if (file && file.type.startsWith('image/')) {
             addImage(file);
           }
         }
+      }
 
-        // 处理文件/文件夹路径
-        if (item.kind === 'string' && item.type === 'text/uri-list') {
-          console.log('[Drop Debug] Found text/uri-list item');
-          item.getAsString((uriString) => {
-            console.log('[Drop Debug] URI string received:', uriString);
-            if (uriString) {
-              let filePath = uriString.trim();
-              
-              // 解析 file:// URI
-              if (filePath.startsWith('file:///')) {
-                // file:///d:/path/to/file (Windows) -> d:/path/to/file
-                // file:///home/user/file (Unix) -> /home/user/file
-                filePath = filePath.substring(8); // 移除 file:///
-                
-                // Unix 路径需要加回开头的 /
-                if (!/^[a-zA-Z]:/.test(filePath)) {
-                  filePath = '/' + filePath;
-                }
-              } else if (filePath.startsWith('file://')) {
-                filePath = filePath.substring(7); // 移除 file://
-              }
-              
-              // URL 解码
-              filePath = decodeURIComponent(filePath);
-              console.log('[Drop Debug] Parsed file path:', filePath);
-
-              const pathParts = filePath.split(/[\\\\/]/);
-              const name = pathParts.pop() || '';
-
-              // 简单推断是否为目录：无扩展名或以 . 开头的隐藏目录
-              const isFolder = !name.includes('.') || name.startsWith('.');
-              console.log('[Drop Debug] File info:', { name, isFolder });
-
-              // 所有文件和目录都允许拖拽添加（只是引用路径，无需限制类型）
-              console.log('[Drop Debug] Calling insertFileChipAtPosition...');
-              insertFileChipAtPosition(name, filePath, isFolder, dropX, dropY);
-            } else {
-              console.log('[Drop Debug] URI string is empty');
-            }
-          });
+      // 按优先级查找第一个匹配的 URI 类型
+      let uriHandled = false;
+      for (const uriType of URI_TYPES) {
+        if (uriHandled) break;
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].kind === 'string' && items[i].type === uriType) {
+            uriHandled = true;
+            items[i].getAsString((uriString) => {
+              console.log('[Drop] URI type:', uriType, 'content:', uriString);
+              handleUriDrop(uriString, dropX, dropY);
+            });
+            break;
+          }
         }
       }
     });
