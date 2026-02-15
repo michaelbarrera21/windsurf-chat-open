@@ -1,11 +1,11 @@
-# WindsurfChat Open - 架构流程
+# EnhanceChat Open - 架构流程
 
 ## 核心调用流程
 
 ```mermaid
 graph TB
     A[VSCode 插件启动] --> B[生成随机端口]
-    B --> C[写入 .windsurfchatopen/port]
+    B --> C[写入 .EnhanceChatopen/port]
     C --> D[启动 HTTP 服务器<br/>127.0.0.1:端口]
     
     E[AI 完成任务] --> F[调用 windsurf_chat.cjs]
@@ -31,13 +31,13 @@ graph TB
 
 ```
 工作区 A
-├── .windsurfchatopen/
+├── .EnhanceChatopen/
 │   ├── port (35386)
 │   └── windsurf_chat.cjs
 └── HTTP 服务器: 127.0.0.1:35386
 
 工作区 B
-├── .windsurfchatopen/
+├── .EnhanceChatopen/
 │   ├── port (41203)
 │   └── windsurf_chat.cjs
 └── HTTP 服务器: 127.0.0.1:41203

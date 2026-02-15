@@ -56,7 +56,7 @@ class ExtensionStateManager {
   }
 
   public async activate() {
-    console.log('[WindsurfChatOpen] Activating extension...');
+    console.log('[EnhanceChatOpen] Activating extension...');
 
     // If disabled, ensure clean state to remove any stale files
     if (!this.workspaceManager.isEnabled()) {
@@ -112,7 +112,7 @@ class ExtensionStateManager {
     // Listen for workspace folder changes
     this.context.subscriptions.push(
       vscode.workspace.onDidChangeWorkspaceFolders(() => {
-        console.log('[WindsurfChatOpen] Workspace folders changed, re-running setup...');
+        console.log('[EnhanceChatOpen] Workspace folders changed, re-running setup...');
         if (vscode.workspace.workspaceFolders?.length) {
           const portA = this.httpService.getPort();
           const portB = this.httpServiceB?.getPort();
@@ -132,45 +132,45 @@ class ExtensionStateManager {
 
       try {
         // 启动原有单 Panel 服务
-        console.log(`[WindsurfChatOpen][${wsName}] Starting PanelA HTTP service...`);
+        console.log(`[EnhanceChatOpen][${wsName}] Starting PanelA HTTP service...`);
         const port = await this.httpService.start();
-        console.log(`[WindsurfChatOpen][${wsName}] httpService.start() returned: ${port}`);
+        console.log(`[EnhanceChatOpen][${wsName}] httpService.start() returned: ${port}`);
 
         if (port > 0) {
-          console.log(`[WindsurfChatOpen][${wsName}] HTTP Server started on port ${port}`);
+          console.log(`[EnhanceChatOpen][${wsName}] HTTP Server started on port ${port}`);
           this.panelProvider.setPort(port);
         }
 
         // 启动 Arena 模式双服务
-        console.log(`[WindsurfChatOpen][${wsName}] Starting PanelB HTTP service...`);
+        console.log(`[EnhanceChatOpen][${wsName}] Starting PanelB HTTP service...`);
         const portB = await this.httpServiceB!.startWithBasePort(BASE_PORT_B);
-        console.log(`[WindsurfChatOpen][${wsName}] httpServiceB.startWithBasePort() returned: ${portB}`);
+        console.log(`[EnhanceChatOpen][${wsName}] httpServiceB.startWithBasePort() returned: ${portB}`);
 
         if (portB > 0) {
-          console.log(`[WindsurfChatOpen][${wsName}] Arena Mode - HTTP Server B on port ${portB}`);
+          console.log(`[EnhanceChatOpen][${wsName}] Arena Mode - HTTP Server B on port ${portB}`);
           this.panelProviderB!.setPort(portB);
           this.arenaMode = true;
         }
 
         // 统一调用 setup，传入两个端口（如果 portB 无效则为 undefined）
         if (vscode.workspace.workspaceFolders?.length && this.workspaceManager.isEnabled()) {
-          console.log(`[WindsurfChatOpen][${wsName}] Calling setup with portA=${port}, portB=${portB > 0 ? portB : 'undefined'}`);
+          console.log(`[EnhanceChatOpen][${wsName}] Calling setup with portA=${port}, portB=${portB > 0 ? portB : 'undefined'}`);
           this.workspaceManager.setup(port, portB > 0 ? portB : undefined);
           this.updateStatusBar();
         }
       } catch (err) {
-        vscode.window.showErrorMessage(`WindsurfChatOpen failed to start: ${err}`);
+        vscode.window.showErrorMessage(`EnhanceChatOpen failed to start: ${err}`);
       }
     }, HTTP_SERVER_START_DELAY_MS);
 
-    console.log('[WindsurfChatOpen] Extension activated');
+    console.log('[EnhanceChatOpen] Extension activated');
   }
 
   private createStatusBarItem() {
     // 打开面板按钮（右侧更靠右，优先级更高）
     this.panelStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 99);
     this.panelStatusBarItem.text = '$(comment-discussion) 打开Panel';
-    this.panelStatusBarItem.tooltip = 'WindsurfChatOpen - 打开对话面板';
+    this.panelStatusBarItem.tooltip = 'EnhanceChatOpen - 打开对话面板';
     this.panelStatusBarItem.command = COMMANDS.FOCUS;
     this.context.subscriptions.push(this.panelStatusBarItem);
 
@@ -226,7 +226,7 @@ class ExtensionStateManager {
   }
 
   private async handleRequest(data: RequestData) {
-    console.log(`[WindsurfChatOpen] Received request: ${data.requestId}`);
+    console.log(`[EnhanceChatOpen] Received request: ${data.requestId}`);
     if (data.timeoutMinutes === undefined) {
       data.timeoutMinutes = this.panelProvider.getTimeoutMinutes();
     }
@@ -234,7 +234,7 @@ class ExtensionStateManager {
   }
 
   private async handleRequestB(data: RequestData) {
-    console.log(`[WindsurfChatOpen] Arena B - Received request: ${data.requestId}`);
+    console.log(`[EnhanceChatOpen] Arena B - Received request: ${data.requestId}`);
     if (data.timeoutMinutes === undefined) {
       data.timeoutMinutes = this.panelProviderB!.getTimeoutMinutes();
     }
@@ -259,7 +259,7 @@ class ExtensionStateManager {
   private cleanOldTempFiles() {
     const tempDir = os.tmpdir();
     const now = Date.now();
-    const prefixes = ['wsc_img_', 'windsurf_chat_instruction_'];
+    const prefixes = ['wsc_img_', 'enhance_chat_instruction_'];
 
     try {
       const files = fs.readdirSync(tempDir);
@@ -279,10 +279,10 @@ class ExtensionStateManager {
         }
       }
       if (count > 0) {
-        console.log(`[WindsurfChatOpen] Cleaned ${count} old temp files`);
+        console.log(`[EnhanceChatOpen] Cleaned ${count} old temp files`);
       }
     } catch (e) {
-      console.error(`[WindsurfChatOpen] Failed to clean temp files: ${e}`);
+      console.error(`[EnhanceChatOpen] Failed to clean temp files: ${e}`);
     }
   }
 
@@ -297,7 +297,7 @@ class ExtensionStateManager {
     this.workspaceManager.cleanupAllWorkspaces();
     // Dispose workspace manager (watchers, polling intervals)
     this.workspaceManager.dispose();
-    console.log('[WindsurfChatOpen] Extension deactivated');
+    console.log('[EnhanceChatOpen] Extension deactivated');
   }
 }
 
@@ -306,7 +306,7 @@ let stateManager: ExtensionStateManager | null = null;
 export function activate(context: vscode.ExtensionContext) {
   stateManager = new ExtensionStateManager(context);
   stateManager.activate().catch(err => {
-    console.error('[WindsurfChatOpen] Activation error:', err);
+    console.error('[EnhanceChatOpen] Activation error:', err);
   });
 }
 

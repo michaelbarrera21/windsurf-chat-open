@@ -32,7 +32,7 @@ export class WorkspaceManager {
             fs.copyFileSync(src, dest);
             return true;
         } catch (error) {
-            console.error(`[WindsurfChatOpen] Failed to sync file from ${src} to ${dest}:`, error);
+            console.error(`[EnhanceChatOpen] Failed to sync file from ${src} to ${dest}:`, error);
             return false;
         }
     }
@@ -51,7 +51,7 @@ export class WorkspaceManager {
             fs.cpSync(srcDir, destDir, { recursive: true, force: true });
             return true;
         } catch (error) {
-            console.error(`[WindsurfChatOpen] Failed to sync directory from ${srcDir} to ${destDir}:`, error);
+            console.error(`[EnhanceChatOpen] Failed to sync directory from ${srcDir} to ${destDir}:`, error);
             return false;
         }
     }
@@ -78,7 +78,7 @@ export class WorkspaceManager {
     public setup(portA?: number, portB?: number) {
         // 如果扩展被禁用，不执行 setup
         if (!this.isEnabled()) {
-            console.log('[WindsurfChatOpen] Extension is disabled, skipping setup');
+            console.log('[EnhanceChatOpen] Extension is disabled, skipping setup');
             return;
         }
 
@@ -88,7 +88,7 @@ export class WorkspaceManager {
             return;
         }
 
-        const scriptSrc = path.join(this.extensionPath, 'lib', 'windsurf_chat.cjs');
+        const scriptSrc = path.join(this.extensionPath, 'lib', 'enhance_chat.cjs');
         this.lastPortA = portA;
         this.lastPortB = portB;
         this.lastScriptSrc = scriptSrc;
@@ -135,12 +135,12 @@ export class WorkspaceManager {
                     assignedPort = portB;
                     panelId = 'B';
                     countB++;
-                    console.log(`[WindsurfChatOpen] Setting up worktree ${panelId}: ${worktreePath} with port ${assignedPort}`);
+                    console.log(`[EnhanceChatOpen] Setting up worktree ${panelId}: ${worktreePath} with port ${assignedPort}`);
                 } else {
                     assignedPort = portA;
                     panelId = 'A';
                     countA++;
-                    console.log(`[WindsurfChatOpen] Setting up worktree ${panelId}: ${worktreePath} with port ${assignedPort}`);
+                    console.log(`[EnhanceChatOpen] Setting up worktree ${panelId}: ${worktreePath} with port ${assignedPort}`);
                 }
 
                 this.setupForPath(worktreePath, scriptSrc, assignedPort, workspacePath, true);
@@ -150,7 +150,7 @@ export class WorkspaceManager {
             this.watchWorktrees(folder, workspacePath);
         }
 
-        const msg = isArenaMode ? 'WindsurfChatOpen Arena 模式初始化完成' : 'WindsurfChatOpen 初始化完成';
+        const msg = isArenaMode ? 'EnhanceChatOpen Arena 模式初始化完成' : 'EnhanceChatOpen 初始化完成';
         vscode.window.showInformationMessage(msg);
     }
 
@@ -226,36 +226,36 @@ export class WorkspaceManager {
             if (syncedLocalDir && port && port > 0) {
                 const portFile = path.join(localDir, 'port');
                 fs.writeFileSync(portFile, port.toString(), 'utf-8');
-                console.log(`[WindsurfChatOpen] Wrote port ${port} for worktree: ${basePath}`);
+                console.log(`[EnhanceChatOpen] Wrote port ${port} for worktree: ${basePath}`);
             }
 
             if (syncedLocalDir && syncedRules) {
-                console.log(`[WindsurfChatOpen] Synced ChatOpen assets from main workspace to worktree: ${basePath}`);
-                console.log(`[WindsurfChatOpen] Setup complete for: ${basePath}`);
+                console.log(`[EnhanceChatOpen] Synced ChatOpen assets from main workspace to worktree: ${basePath}`);
+                console.log(`[EnhanceChatOpen] Setup complete for: ${basePath}`);
                 return;
             }
         }
 
         if (!skipLocalDirWrite) {
             // Remove old .js script if exists
-            const oldScriptPath = path.join(localDir, 'windsurf_chat.js');
+            const oldScriptPath = path.join(localDir, 'enhance_chat.js');
             if (fs.existsSync(oldScriptPath)) {
                 fs.unlinkSync(oldScriptPath);
             }
 
             // Copy script
-            const scriptDest = path.join(localDir, 'windsurf_chat.cjs');
+            const scriptDest = path.join(localDir, 'enhance_chat.cjs');
             if (fs.existsSync(scriptSrc)) {
                 fs.copyFileSync(scriptSrc, scriptDest);
             } else {
-                console.error(`[WindsurfChatOpen] Script source not found: ${scriptSrc}`);
+                console.error(`[EnhanceChatOpen] Script source not found: ${scriptSrc}`);
             }
 
             // 始终写入端口文件（确保每次启动使用正确端口）
             if (port && port > 0) {
                 const portFile = path.join(localDir, 'port');
                 fs.writeFileSync(portFile, port.toString(), 'utf-8');
-                console.log(`[WindsurfChatOpen] Wrote port ${port} to: ${portFile}`);
+                console.log(`[EnhanceChatOpen] Wrote port ${port} to: ${portFile}`);
             }
         }
 
@@ -270,7 +270,7 @@ export class WorkspaceManager {
             this.updateGitignore(basePath);
         }
 
-        console.log(`[WindsurfChatOpen] Setup complete for: ${basePath}`);
+        console.log(`[EnhanceChatOpen] Setup complete for: ${basePath}`);
     }
 
     private findWorktrees(folder: vscode.WorkspaceFolder): string[] {
@@ -296,7 +296,7 @@ export class WorkspaceManager {
                 }
             }
         } catch (e) {
-            console.error('[WindsurfChatOpen] Error finding worktrees:', e);
+            console.error('[EnhanceChatOpen] Error finding worktrees:', e);
         }
         return worktrees;
     }
@@ -317,7 +317,7 @@ export class WorkspaceManager {
             // worktreeRoot doesn't exist, need to watch parent directories
             this.watchForWorktreeRootCreation(worktreesDir, worktreeRoot, folderName, sourceWorkspacePath);
         } catch (error) {
-            console.error('[WindsurfChatOpen] Failed to watch worktrees:', error);
+            console.error('[EnhanceChatOpen] Failed to watch worktrees:', error);
         }
     }
 
@@ -331,7 +331,7 @@ export class WorkspaceManager {
         if (fs.existsSync(worktreesDir) && fs.statSync(worktreesDir).isDirectory()) {
             // Watch worktreesDir for folderName directory creation
             this.watchParentForChild(worktreesDir, folderName, () => {
-                console.log(`[WindsurfChatOpen] Detected worktreeRoot created: ${worktreeRoot}`);
+                console.log(`[EnhanceChatOpen] Detected worktreeRoot created: ${worktreeRoot}`);
                 this.watchWorktreeRoot(worktreeRoot, folderName, sourceWorkspacePath);
             });
             return;
@@ -341,10 +341,10 @@ export class WorkspaceManager {
         const windsurfDir = path.dirname(worktreesDir);
         if (fs.existsSync(windsurfDir) && fs.statSync(windsurfDir).isDirectory()) {
             this.watchParentForChild(windsurfDir, 'worktrees', () => {
-                console.log(`[WindsurfChatOpen] Detected worktrees directory created: ${worktreesDir}`);
+                console.log(`[EnhanceChatOpen] Detected worktrees directory created: ${worktreesDir}`);
                 // Now watch worktreesDir for folderName
                 this.watchParentForChild(worktreesDir, folderName, () => {
-                    console.log(`[WindsurfChatOpen] Detected worktreeRoot created: ${worktreeRoot}`);
+                    console.log(`[EnhanceChatOpen] Detected worktreeRoot created: ${worktreeRoot}`);
                     this.watchWorktreeRoot(worktreeRoot, folderName, sourceWorkspacePath);
                 });
             });
@@ -354,11 +354,11 @@ export class WorkspaceManager {
         // ~/.windsurf doesn't exist, watch home for '.windsurf' creation
         const homeDir = path.dirname(windsurfDir);
         this.watchParentForChild(homeDir, '.windsurf', () => {
-            console.log(`[WindsurfChatOpen] Detected .windsurf directory created: ${windsurfDir}`);
+            console.log(`[EnhanceChatOpen] Detected .windsurf directory created: ${windsurfDir}`);
             this.watchParentForChild(windsurfDir, 'worktrees', () => {
-                console.log(`[WindsurfChatOpen] Detected worktrees directory created: ${worktreesDir}`);
+                console.log(`[EnhanceChatOpen] Detected worktrees directory created: ${worktreesDir}`);
                 this.watchParentForChild(worktreesDir, folderName, () => {
-                    console.log(`[WindsurfChatOpen] Detected worktreeRoot created: ${worktreeRoot}`);
+                    console.log(`[EnhanceChatOpen] Detected worktreeRoot created: ${worktreeRoot}`);
                     this.watchWorktreeRoot(worktreeRoot, folderName, sourceWorkspacePath);
                 });
             });
@@ -392,14 +392,14 @@ export class WorkspaceManager {
 
                     onChildCreated();
                 } catch (error) {
-                    console.error(`[WindsurfChatOpen] Parent watcher handler error for ${watchKey}:`, error);
+                    console.error(`[EnhanceChatOpen] Parent watcher handler error for ${watchKey}:`, error);
                 }
             });
 
             this.parentWatchers.set(watchKey, watcher);
-            console.log(`[WindsurfChatOpen] Watching ${parentDir} for ${childName} creation`);
+            console.log(`[EnhanceChatOpen] Watching ${parentDir} for ${childName} creation`);
         } catch (error) {
-            console.error(`[WindsurfChatOpen] Failed to watch ${parentDir} for ${childName}:`, error);
+            console.error(`[EnhanceChatOpen] Failed to watch ${parentDir} for ${childName}:`, error);
         }
     }
 
@@ -436,7 +436,7 @@ export class WorkspaceManager {
                         continue;
                     }
 
-                    const scriptSrc = this.lastScriptSrc || path.join(this.extensionPath, 'lib', 'windsurf_chat.cjs');
+                    const scriptSrc = this.lastScriptSrc || path.join(this.extensionPath, 'lib', 'enhance_chat.cjs');
 
                     // Determine port and whether this is Arena mode
                     let port = this.lastPortA;
@@ -460,7 +460,7 @@ export class WorkspaceManager {
                                     port = existingPort;
                                     const panelId: PanelId = port === this.lastPortA ? 'A' : 'B';
                                     this.worktreePorts.set(fullPath, { port, panelId });
-                                    console.log(`[WindsurfChatOpen] Arena Mode: Using existing port ${port} (Panel ${panelId}) for: ${fullPath}`);
+                                    console.log(`[EnhanceChatOpen] Arena Mode: Using existing port ${port} (Panel ${panelId}) for: ${fullPath}`);
                                 }
                             }
                         } catch {
@@ -501,17 +501,17 @@ export class WorkspaceManager {
                             if (countB < countA) {
                                 port = this.lastPortB!;
                                 this.worktreePorts.set(fullPath, { port, panelId: 'B' });
-                                console.log(`[WindsurfChatOpen] Arena Mode: Assigning port ${port} (Panel B) to: ${fullPath}`);
+                                console.log(`[EnhanceChatOpen] Arena Mode: Assigning port ${port} (Panel B) to: ${fullPath}`);
                             } else {
                                 port = this.lastPortA!;
                                 this.worktreePorts.set(fullPath, { port, panelId: 'A' });
-                                console.log(`[WindsurfChatOpen] Arena Mode: Assigning port ${port} (Panel A) to: ${fullPath}`);
+                                console.log(`[EnhanceChatOpen] Arena Mode: Assigning port ${port} (Panel A) to: ${fullPath}`);
                             }
                         }
                     }
 
                     this.initializingWorktrees.add(fullPath);
-                    console.log(`[WindsurfChatOpen] Scanned new worktree, setting up: ${fullPath}`);
+                    console.log(`[EnhanceChatOpen] Scanned new worktree, setting up: ${fullPath}`);
                     try {
                         this.setupForPath(fullPath, scriptSrc, port, sourceWorkspacePath, forceWritePort);
                     } finally {
@@ -519,7 +519,7 @@ export class WorkspaceManager {
                     }
                 }
             } catch (error) {
-                console.error('[WindsurfChatOpen] Failed scanning worktreeRoot:', error);
+                console.error('[EnhanceChatOpen] Failed scanning worktreeRoot:', error);
             }
         };
 
@@ -547,12 +547,12 @@ export class WorkspaceManager {
                 // On Windows fs.watch may coalesce events or report filename as null when multiple dirs are created quickly.
                 scheduleScan();
             } catch (error) {
-                console.error('[WindsurfChatOpen] Worktree watcher handler error:', error);
+                console.error('[EnhanceChatOpen] Worktree watcher handler error:', error);
             }
         });
 
         this.worktreeWatchers.set(worktreeRoot, watcher);
-        console.log(`[WindsurfChatOpen] Watching worktreeRoot: ${worktreeRoot}`);
+        console.log(`[EnhanceChatOpen] Watching worktreeRoot: ${worktreeRoot}`);
 
         // Start polling as fallback for large repos where fs.watch may miss events
         if (!this.pollingIntervals.has(worktreeRoot)) {
@@ -560,7 +560,7 @@ export class WorkspaceManager {
                 scanAndSetup();
             }, WorkspaceManager.POLLING_INTERVAL_MS);
             this.pollingIntervals.set(worktreeRoot, pollingInterval);
-            console.log(`[WindsurfChatOpen] Started polling fallback for: ${worktreeRoot} (every ${WorkspaceManager.POLLING_INTERVAL_MS}ms)`);
+            console.log(`[EnhanceChatOpen] Started polling fallback for: ${worktreeRoot} (every ${WorkspaceManager.POLLING_INTERVAL_MS}ms)`);
         }
     }
 
@@ -573,7 +573,7 @@ export class WorkspaceManager {
             fs.unlinkSync(rulesDest);
         }
         fs.writeFileSync(rulesDest, rulesContent);
-        console.log(`[WindsurfChatOpen] Created/Updated .windsurfrules`);
+        console.log(`[EnhanceChatOpen] Created/Updated .windsurfrules`);
     }
 
     private updateGitignore(workspacePath: string) {
@@ -584,15 +584,15 @@ export class WorkspaceManager {
             const content = fs.readFileSync(gitignorePath, 'utf-8');
             const entriesToAdd = ignoreEntries.filter(entry => !content.includes(entry));
             if (entriesToAdd.length > 0) {
-                fs.appendFileSync(gitignorePath, '\n# WindsurfChatOpen\n' + entriesToAdd.join('\n') + '\n');
+                fs.appendFileSync(gitignorePath, '\n# EnhanceChatOpen\n' + entriesToAdd.join('\n') + '\n');
             }
         } else {
-            fs.writeFileSync(gitignorePath, '# WindsurfChatOpen\n' + ignoreEntries.join('\n') + '\n');
+            fs.writeFileSync(gitignorePath, '# EnhanceChatOpen\n' + ignoreEntries.join('\n') + '\n');
         }
     }
 
     private generateRulesContent(): string {
-        const scriptPath = `./${LOCAL_DIR_NAME}/windsurf_chat.cjs`;
+        const scriptPath = `./${LOCAL_DIR_NAME}/enhance_chat.cjs`;
 
         return `${RULE_MARKER}
 
@@ -600,7 +600,7 @@ export class WorkspaceManager {
 CRITICAL SYSTEM RULE - READ THIS FIRST
 =======================================================================
 
-After EVERY response, you MUST call the windsurf_chat script.
+After EVERY response, you MUST call the enhance_chat script.
 This is NOT optional. This is a MANDATORY system requirement.
 
 =======================================================================
@@ -687,7 +687,7 @@ alwaysApply: true
                 return { success: true, message: 'ChatOpen 已禁用，请打开新的 AI 对话窗口' };
             }
         } catch (error) {
-            console.error('[WindsurfChatOpen] Toggle rules error:', error);
+            console.error('[EnhanceChatOpen] Toggle rules error:', error);
             return { success: false, message: `操作失败: ${error}` };
         }
     }
@@ -725,22 +725,22 @@ alwaysApply: true
             // 删除 .windsurfrules
             if (fs.existsSync(rulesPath)) {
                 fs.unlinkSync(rulesPath);
-                console.log(`[WindsurfChatOpen] Deleted: ${rulesPath}`);
+                console.log(`[EnhanceChatOpen] Deleted: ${rulesPath}`);
             }
 
-            // 删除 .windsurfchatopen 目录
+            // 删除 .EnhanceChatopen 目录
             if (fs.existsSync(localDir)) {
                 fs.rmSync(localDir, { recursive: true, force: true });
-                console.log(`[WindsurfChatOpen] Deleted directory: ${localDir}`);
+                console.log(`[EnhanceChatOpen] Deleted directory: ${localDir}`);
             }
 
             // 删除 .disabledrules 文件
             if (fs.existsSync(disabledRulesPath)) {
                 fs.unlinkSync(disabledRulesPath);
-                console.log(`[WindsurfChatOpen] Deleted: ${disabledRulesPath}`);
+                console.log(`[EnhanceChatOpen] Deleted: ${disabledRulesPath}`);
             }
         } catch (error) {
-            console.error(`[WindsurfChatOpen] Cleanup error for ${workspacePath}:`, error);
+            console.error(`[EnhanceChatOpen] Cleanup error for ${workspacePath}:`, error);
         }
     }
 
@@ -759,10 +759,10 @@ alwaysApply: true
             try {
                 if (fs.existsSync(disabledRulesPath)) {
                     fs.unlinkSync(disabledRulesPath);
-                    console.log(`[WindsurfChatOpen] Deleted: ${disabledRulesPath}`);
+                    console.log(`[EnhanceChatOpen] Deleted: ${disabledRulesPath}`);
                 }
             } catch (error) {
-                console.error(`[WindsurfChatOpen] Failed to delete ${disabledRulesPath}:`, error);
+                console.error(`[EnhanceChatOpen] Failed to delete ${disabledRulesPath}:`, error);
             }
         }
     }
@@ -774,21 +774,21 @@ alwaysApply: true
         // Stop all polling intervals
         for (const [key, interval] of this.pollingIntervals) {
             clearInterval(interval);
-            console.log(`[WindsurfChatOpen] Stopped polling for: ${key}`);
+            console.log(`[EnhanceChatOpen] Stopped polling for: ${key}`);
         }
         this.pollingIntervals.clear();
 
         // Close all worktree watchers
         for (const [key, watcher] of this.worktreeWatchers) {
             watcher.close();
-            console.log(`[WindsurfChatOpen] Closed worktree watcher: ${key}`);
+            console.log(`[EnhanceChatOpen] Closed worktree watcher: ${key}`);
         }
         this.worktreeWatchers.clear();
 
         // Close all parent watchers
         for (const [key, watcher] of this.parentWatchers) {
             watcher.close();
-            console.log(`[WindsurfChatOpen] Closed parent watcher: ${key}`);
+            console.log(`[EnhanceChatOpen] Closed parent watcher: ${key}`);
         }
         this.parentWatchers.clear();
 

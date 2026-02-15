@@ -7,7 +7,7 @@ import * as os from 'os';
  */
 export function showDesktopNotification(title: string, message: string): void {
     if (os.platform() !== 'win32') {
-        console.log(`[WindsurfChatOpen] Desktop notification not supported on ${os.platform()}`);
+        console.log(`[EnhanceChatOpen] Desktop notification not supported on ${os.platform()}`);
         return;
     }
 
@@ -44,7 +44,7 @@ $xml = New-Object Windows.Data.Xml.Dom.XmlDocument
 $xml.LoadXml($template)
 
 $toast = [Windows.UI.Notifications.ToastNotification]::new($xml)
-$appId = 'WindsurfChatOpen'
+$appId = 'EnhanceChatOpen'
 try {
     [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier($appId).Show($toast)
 } catch {
@@ -69,12 +69,12 @@ try {
                 try { require('fs').unlinkSync(tmpFile); } catch { }
 
                 if (error) {
-                    console.log(`[WindsurfChatOpen] Desktop notification error: ${error.message}`);
+                    console.log(`[EnhanceChatOpen] Desktop notification error: ${error.message}`);
                 }
             }
         );
-        console.log(`[WindsurfChatOpen] Desktop notification sent: ${title}`);
+        console.log(`[EnhanceChatOpen] Desktop notification sent: ${title}`);
     } catch (e) {
-        console.error(`[WindsurfChatOpen] Failed to send desktop notification: ${e}`);
+        console.error(`[EnhanceChatOpen] Failed to send desktop notification: ${e}`);
     }
 }

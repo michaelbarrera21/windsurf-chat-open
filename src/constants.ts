@@ -1,6 +1,6 @@
-export const LOCAL_DIR_NAME = '.windsurfchatopen';
+export const LOCAL_DIR_NAME = '.EnhanceChatopen';
 export const RULES_FILE_NAME = '.windsurfrules';
-export const EXTENSION_ENABLED_KEY = 'windsurfChatOpen.enabled';
+export const EXTENSION_ENABLED_KEY = 'EnhanceChatOpen.enabled';
 export const BASE_PORT = 34500;
 export const BASE_PORT_B = 34600; // Arena 模式第二个端口起始
 export const MAX_PORT_ATTEMPTS = 100;
@@ -15,17 +15,17 @@ export const MAX_IMAGE_COUNT = 10;
 export const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB per image
 
 export const COMMANDS = {
-    FOCUS: 'windsurfChatOpen.focus',
-    FOCUS_B: 'windsurfChatOpen.focusB',
-    SETUP: 'windsurfChatOpen.setup',
-    PANEL_FOCUS: 'windsurfChatOpen.panel.focus',
-    PANEL_B_FOCUS: 'windsurfChatOpen.panelB.focus',
-    TOGGLE_RULES: 'windsurfChatOpen.toggleRules'
+    FOCUS: 'EnhanceChatOpen.focus',
+    FOCUS_B: 'EnhanceChatOpen.focusB',
+    SETUP: 'EnhanceChatOpen.setup',
+    PANEL_FOCUS: 'EnhanceChatOpen.panel.focus',
+    PANEL_B_FOCUS: 'EnhanceChatOpen.panelB.focus',
+    TOGGLE_RULES: 'EnhanceChatOpen.toggleRules'
 };
 
 export const VIEWS = {
-    PANEL: 'windsurfChatOpen.panel',
-    PANEL_B: 'windsurfChatOpen.panelB'
+    PANEL: 'EnhanceChatOpen.panel',
+    PANEL_B: 'EnhanceChatOpen.panelB'
 };
 
 // Arena 模式标识
@@ -35,7 +35,7 @@ export const PANEL_LABELS: Record<PanelId, string> = {
     B: 'AI-B'
 };
 
-export const RULE_MARKER = '<!-- WINDSURF_CHAT_OPEN_V1 -->';
+export const RULE_MARKER = '<!-- ENHANCE_CHAT_OPEN_V1 -->';
 
 export const ERROR_MESSAGES = {
     WEBVIEW_NOT_READY: 'Webview 面板未就绪，请重试。如果问题持续，请尝试重新打开面板。',

@@ -9,7 +9,7 @@
 
 ### 初始版本
 
-基于 WindsurfChatOpen 原始项目重新整理发布。
+基于 EnhanceChatOpen 原始项目重新整理发布。
 
 #### 核心功能
 - **HTTP 服务通信** - 实现 AI Agent 与 Webview 面板的双向通信

@@ -70,7 +70,7 @@ export class ChatPanelProvider implements vscode.WebviewViewProvider {
   }
 
   public get panelLabel(): string {
-    return this._panelId ? PANEL_LABELS[this._panelId] : 'WindsurfChatOpen';
+    return this._panelId ? PANEL_LABELS[this._panelId] : 'EnhanceChatOpen';
   }
 
   private _resetViewReadyPromise() {
@@ -130,7 +130,7 @@ export class ChatPanelProvider implements vscode.WebviewViewProvider {
       case 'setTimeout':
         if (typeof message.timeoutMinutes === 'number' && message.timeoutMinutes >= 0) {
           this._timeoutMinutes = message.timeoutMinutes;
-          console.log(`[WindsurfChatOpen] Timeout set to ${this._timeoutMinutes} minutes`);
+          console.log(`[EnhanceChatOpen] Timeout set to ${this._timeoutMinutes} minutes`);
         }
         break;
       case 'getWorkspaceRoot':
@@ -224,7 +224,7 @@ export class ChatPanelProvider implements vscode.WebviewViewProvider {
         )
       ]);
     } catch (e) {
-      console.error(`[WindsurfChatOpen] ${e}`);
+      console.error(`[EnhanceChatOpen] ${e}`);
       // Webview not ready, fire error response
       this._onUserResponse.fire({
         action: 'error',
@@ -256,7 +256,7 @@ export class ChatPanelProvider implements vscode.WebviewViewProvider {
       totalToolCount = stats.totalToolCount;
       allToolsList = Array.from(stats.allTools);
 
-      console.log(`[WindsurfChatOpen] Conversation ${conversationId}: total tools = ${totalToolCount}, unique tools = ${allToolsList.length}`);
+      console.log(`[EnhanceChatOpen] Conversation ${conversationId}: total tools = ${totalToolCount}, unique tools = ${allToolsList.length}`);
     }
 
     if (this._view) {
@@ -294,7 +294,7 @@ export class ChatPanelProvider implements vscode.WebviewViewProvider {
         });
       }
     } else {
-      console.error('[WindsurfChatOpen] Panel view not available after focus attempt');
+      console.error('[EnhanceChatOpen] Panel view not available after focus attempt');
       this._onUserResponse.fire({
         action: 'error',
         text: '',
@@ -354,22 +354,22 @@ export class ChatPanelProvider implements vscode.WebviewViewProvider {
         fs.writeFileSync(imgPath, base64Data, 'base64');
         savedImages.push(imgPath);
       } catch (e) {
-        console.error(`[WindsurfChatOpen] ${ERROR_MESSAGES.IMAGE_SAVE_FAILED} ${i}: ${e}`);
+        console.error(`[EnhanceChatOpen] ${ERROR_MESSAGES.IMAGE_SAVE_FAILED} ${i}: ${e}`);
         failedImages.push(i + 1);
       }
     });
 
     let warningPrefix = '';
     if (oversizedImages.length > 0) {
-      warningPrefix += `[WindsurfChatOpen 警告] 第 ${oversizedImages.join(', ')} 张图片超过大小限制（5MB），已跳过\n\n`;
+      warningPrefix += `[EnhanceChatOpen 警告] 第 ${oversizedImages.join(', ')} 张图片超过大小限制（5MB），已跳过\n\n`;
     }
     if (failedImages.length > 0) {
-      warningPrefix += `[WindsurfChatOpen 警告] 第 ${failedImages.join(', ')} 张图片保存失败\n\n`;
+      warningPrefix += `[EnhanceChatOpen 警告] 第 ${failedImages.join(', ')} 张图片保存失败\n\n`;
     }
 
     if (text.length > LONG_TEXT_THRESHOLD) {
       try {
-        const txtPath = path.join(tempDir, `windsurf_chat_instruction_${uniqueId}.txt`);
+        const txtPath = path.join(tempDir, `enhance_chat_instruction_${uniqueId}.txt`);
         fs.writeFileSync(txtPath, text, 'utf-8');
         this._onUserResponse.fire({
           action: 'instruction',
@@ -379,7 +379,7 @@ export class ChatPanelProvider implements vscode.WebviewViewProvider {
           requestId: requestId
         });
       } catch (e) {
-        console.error(`[WindsurfChatOpen] Failed to save text file: ${e}`);
+        console.error(`[EnhanceChatOpen] Failed to save text file: ${e}`);
         this._onUserResponse.fire({
           action: 'error',
           text: '',

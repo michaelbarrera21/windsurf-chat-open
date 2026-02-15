@@ -1,13 +1,13 @@
 {
-  "name": "windsurf-chat-open",
-  "displayName": "WindsurfChatOpen",
-  "description": "开源版 WindsurfChat - 让 AI 停下来听你说话",
-  "version": "1.8.18",
+  "name": "enhance-chat",
+  "displayName": "Enhance Chat",
+  "description": "开源版 EnhanceChat - 让 AI 停下来听你说话",
+  "version": "2.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/nicepkg/windsurf-chat-open"
   },
-  "publisher": "windsurf-chat-open",
+  "publisher": "enhance-chat",
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -22,30 +22,30 @@
     "viewsContainers": {
       "panel": [
         {
-          "id": "windsurfChatOpenPanel",
+          "id": "EnhanceChatOpenPanel",
           "title": "ChatOpen-A",
           "icon": "$(comment-discussion)"
         },
         {
-          "id": "windsurfChatOpenPanelB",
+          "id": "EnhanceChatOpenPanelB",
           "title": "ChatOpen-B",
           "icon": "$(comment-discussion)"
         }
       ]
     },
     "views": {
-      "windsurfChatOpenPanel": [
+      "EnhanceChatOpenPanel": [
         {
           "type": "webview",
-          "id": "windsurfChatOpen.panel",
+          "id": "EnhanceChatOpen.panel",
           "name": "AI-A",
           "icon": "$(comment-discussion)"
         }
       ],
-      "windsurfChatOpenPanelB": [
+      "EnhanceChatOpenPanelB": [
         {
           "type": "webview",
-          "id": "windsurfChatOpen.panelB",
+          "id": "EnhanceChatOpen.panelB",
           "name": "AI-B",
           "icon": "$(comment-discussion)"
         }
@@ -53,21 +53,21 @@
     },
     "commands": [
       {
-        "command": "windsurfChatOpen.focus",
-        "title": "WindsurfChatOpen: 聚焦面板"
+        "command": "EnhanceChatOpen.focus",
+        "title": "EnhanceChatOpen: 聚焦面板"
       },
       {
-        "command": "windsurfChatOpen.focusB",
-        "title": "WindsurfChatOpen: 聚焦面板 B"
+        "command": "EnhanceChatOpen.focusB",
+        "title": "EnhanceChatOpen: 聚焦面板 B"
       },
       {
-        "command": "windsurfChatOpen.setup",
-        "title": "WindsurfChatOpen: 初始化工作区"
+        "command": "EnhanceChatOpen.setup",
+        "title": "EnhanceChatOpen: 初始化工作区"
       }
     ],
     "keybindings": [
       {
-        "command": "windsurfChatOpen.focus",
+        "command": "EnhanceChatOpen.focus",
         "key": "ctrl+shift+w",
         "mac": "cmd+shift+w"
       }

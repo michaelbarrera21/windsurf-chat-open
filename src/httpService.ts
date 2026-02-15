@@ -70,7 +70,7 @@ export class HttpService {
     public async startWithBasePort(basePort: number): Promise<number> {
         // 记录起始端口，用于端口循环
         this.basePort = basePort;
-        console.log(`[WindsurfChatOpen][${this.instanceId}] 开始查找可用端口，起始端口: ${basePort}`);
+        console.log(`[EnhanceChatOpen][${this.instanceId}] 开始查找可用端口，起始端口: ${basePort}`);
 
         this.server = http.createServer((req, res) => this.handleIncomingRequest(req, res));
 
@@ -90,7 +90,7 @@ export class HttpService {
 
         return new Promise((resolve, reject) => {
             this.tryListen(basePort, 0, (port) => {
-                console.log(`[WindsurfChatOpen][${this.instanceId}] Promise resolving with port: ${port}`);
+                console.log(`[EnhanceChatOpen][${this.instanceId}] Promise resolving with port: ${port}`);
                 resolve(port);
             }, reject);
         });
@@ -103,7 +103,7 @@ export class HttpService {
             for (const [requestId, pending] of this.pendingRequests.entries()) {
                 // 检查响应对象是否还可写
                 if (pending.res.writableEnded || pending.res.destroyed) {
-                    console.log(`[WindsurfChatOpen] Connection closed for request ${requestId}, cleaning up`);
+                    console.log(`[EnhanceChatOpen] Connection closed for request ${requestId}, cleaning up`);
                     this.clearPendingRequest(requestId, false);
                 }
             }
@@ -112,36 +112,36 @@ export class HttpService {
 
     private tryListen(port: number, attempt: number, resolve: (port: number) => void, reject: (err: any) => void) {
         if (attempt >= MAX_PORT_ATTEMPTS) {
-            console.error(`[WindsurfChatOpen][${this.instanceId}] 无法找到可用端口，已尝试 ${MAX_PORT_ATTEMPTS} 次`);
+            console.error(`[EnhanceChatOpen][${this.instanceId}] 无法找到可用端口，已尝试 ${MAX_PORT_ATTEMPTS} 次`);
             reject(new Error(`Could not find an available port after ${MAX_PORT_ATTEMPTS} attempts`));
             return;
         }
 
         // 避免重复尝试相同端口
         if (this.triedPorts.has(port)) {
-            console.log(`[WindsurfChatOpen][${this.instanceId}] 端口 ${port} 已尝试过，跳过`);
+            console.log(`[EnhanceChatOpen][${this.instanceId}] 端口 ${port} 已尝试过，跳过`);
             const nextPort = this.getNextPort(port);
             this.tryListen(nextPort, attempt + 1, resolve, reject);
             return;
         }
 
         this.triedPorts.add(port);
-        console.log(`[WindsurfChatOpen][${this.instanceId}] 尝试监听端口 ${port} (第 ${attempt + 1} 次尝试)`);
+        console.log(`[EnhanceChatOpen][${this.instanceId}] 尝试监听端口 ${port} (第 ${attempt + 1} 次尝试)`);
 
         // 使用标志位防止多次 resolve（Node.js 中同一 server 多次 listen 可能导致回调多次触发）
         let resolved = false;
 
         const onListenError = (err: any) => {
             if (resolved) {
-                console.log(`[WindsurfChatOpen][${this.instanceId}] 端口 ${port} error 事件触发但已 resolved，忽略`);
+                console.log(`[EnhanceChatOpen][${this.instanceId}] 端口 ${port} error 事件触发但已 resolved，忽略`);
                 return;
             }
             if (err.code === 'EADDRINUSE') {
-                console.log(`[WindsurfChatOpen][${this.instanceId}] 端口 ${port} 已被占用 (EADDRINUSE)，尝试下一个端口`);
+                console.log(`[EnhanceChatOpen][${this.instanceId}] 端口 ${port} 已被占用 (EADDRINUSE)，尝试下一个端口`);
                 const nextPort = this.getNextPort(port);
                 this.tryListen(nextPort, attempt + 1, resolve, reject);
             } else {
-                console.error(`[WindsurfChatOpen][${this.instanceId}] 端口 ${port} 监听失败: ${err.message}`);
+                console.error(`[EnhanceChatOpen][${this.instanceId}] 端口 ${port} 监听失败: ${err.message}`);
                 resolved = true;
                 reject(err);
             }
@@ -152,20 +152,20 @@ export class HttpService {
 
             // 防止多次 resolve
             if (resolved) {
-                console.log(`[WindsurfChatOpen][${this.instanceId}] 端口 ${port} listening 事件触发但已 resolved，忽略`);
+                console.log(`[EnhanceChatOpen][${this.instanceId}] 端口 ${port} listening 事件触发但已 resolved，忽略`);
                 return;
             }
 
             // 检查是否是当前期望的端口（防止之前失败的 listen 意外触发回调）
             const actualPort = (this.server!.address() as any)?.port;
             if (actualPort !== port) {
-                console.log(`[WindsurfChatOpen][${this.instanceId}] 期望端口 ${port} 但实际端口为 ${actualPort}，忽略此回调`);
+                console.log(`[EnhanceChatOpen][${this.instanceId}] 期望端口 ${port} 但实际端口为 ${actualPort}，忽略此回调`);
                 return;
             }
 
             resolved = true;
             this.port = port;
-            console.log(`[WindsurfChatOpen][${this.instanceId}] ✓ 成功监听端口 ${port}`);
+            console.log(`[EnhanceChatOpen][${this.instanceId}] ✓ 成功监听端口 ${port}`);
             resolve(port);
         };
 
@@ -178,7 +178,7 @@ export class HttpService {
         // 使用动态起始端口进行循环，而不是固定的 BASE_PORT
         if (nextPort > this.basePort + MAX_PORT_ATTEMPTS) {
             nextPort = this.basePort;
-            console.log(`[WindsurfChatOpen][${this.instanceId}] 端口超出范围 ${this.basePort + MAX_PORT_ATTEMPTS}，从 ${this.basePort} 重新开始`);
+            console.log(`[EnhanceChatOpen][${this.instanceId}] 端口超出范围 ${this.basePort + MAX_PORT_ATTEMPTS}，从 ${this.basePort} 重新开始`);
         }
         return nextPort;
     }
@@ -241,7 +241,7 @@ export class HttpService {
                     try {
                         await this.onRequest({ ...data, requestId, timeoutMinutes: initialTimeoutMinutes });
                     } catch (e: any) {
-                        console.error('[WindsurfChatOpen] Failed to handle request:', e);
+                        console.error('[EnhanceChatOpen] Failed to handle request:', e);
                         this.sendResponse(this.createErrorResponse(String(e?.message || e || 'Request handling failed')), requestId);
                     }
 
@@ -254,7 +254,7 @@ export class HttpService {
             });
 
             req.on('error', (err) => {
-                console.error('[WindsurfChatOpen] Request error:', err);
+                console.error('[EnhanceChatOpen] Request error:', err);
                 if (!res.writableEnded) {
                     res.writeHead(500, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ error: 'Request error' }));
@@ -368,7 +368,7 @@ export class HttpService {
                     pending.res.writeHead(200, { 'Content-Type': 'application/json' });
                     pending.res.end(JSON.stringify(responseData || this.createErrorResponse(ERROR_MESSAGES.REQUEST_CANCELLED)));
                 } catch (e) {
-                    console.error('[WindsurfChatOpen] Failed to send response:', e);
+                    console.error('[EnhanceChatOpen] Failed to send response:', e);
                 }
             }
             this.pendingRequests.delete(requestId);
@@ -381,7 +381,7 @@ export class HttpService {
     public sendResponse(response: any, requestId?: string) {
         const id = requestId || this.activeRequestId;
         if (!id || !this.pendingRequests.has(id)) {
-            console.warn(`[WindsurfChatOpen] No pending request found for ID: ${id}`);
+            console.warn(`[EnhanceChatOpen] No pending request found for ID: ${id}`);
             return;
         }
 
@@ -389,7 +389,7 @@ export class HttpService {
 
         // 检查响应对象是否还可写
         if (pending.res.writableEnded || pending.res.destroyed) {
-            console.warn(`[WindsurfChatOpen] Response object already closed for request ${id}, connection may have been lost`);
+            console.warn(`[EnhanceChatOpen] Response object already closed for request ${id}, connection may have been lost`);
             this.clearPendingRequest(id);
             if (this.activeRequestId === id) {
                 this.activeRequestId = null;
@@ -403,9 +403,9 @@ export class HttpService {
                 'Connection': 'keep-alive'
             });
             pending.res.end(JSON.stringify(response));
-            console.log(`[WindsurfChatOpen] Response sent successfully for request ${id}`);
+            console.log(`[EnhanceChatOpen] Response sent successfully for request ${id}`);
         } catch (e) {
-            console.error(`[WindsurfChatOpen] Failed to send response for request ${id}:`, e);
+            console.error(`[EnhanceChatOpen] Failed to send response for request ${id}:`, e);
         }
 
         this.clearPendingRequest(id);

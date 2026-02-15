@@ -3,8 +3,8 @@ dist/
 *.vsix
 .vscode-test/
 .idea/
-# WindsurfChatOpen
-.windsurfchatopen/
+# EnhanceChatOpen
+.EnhanceChatopen/
 .windsurfrules
 .ace-tool/
 releases/

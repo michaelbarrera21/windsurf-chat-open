@@ -672,7 +672,7 @@ export function getPanelScript(): string {
         // 接收工作区根目录
         if (msg.workspaceRoot) {
           workspaceRoot = msg.workspaceRoot;
-          console.log('[WindsurfChatOpen] Workspace root set to:', workspaceRoot);
+          console.log('[EnhanceChatOpen] Workspace root set to:', workspaceRoot);
         }
       } else if (msg.type === 'setRulesStatus') {
         // 处理规则状态变化

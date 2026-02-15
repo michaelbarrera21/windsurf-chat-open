@@ -75,12 +75,12 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.package.outputs.version }}
-          name: WindsurfChatOpen v${{ steps.package.outputs.version }}
+          name: EnhanceChatOpen v${{ steps.package.outputs.version }}
           draft: false
           prerelease: false
           files: ${{ steps.package.outputs.vsix_file }}
           body: |
-            ## 📦 WindsurfChatOpen v${{ steps.package.outputs.version }}
+            ## 📦 EnhanceChatOpen v${{ steps.package.outputs.version }}
             
             ### 安装方法
             

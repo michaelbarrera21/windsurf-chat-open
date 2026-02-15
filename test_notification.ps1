@@ -1,4 +1,4 @@
-﻿# WindsurfChatOpen Toast Notification 测试脚本
+﻿# EnhanceChatOpen Toast Notification 测试脚本
 # 用于测试 Windows Toast 通知是否正常工作
 
 Write-Host "正在测试 Windows Toast 通知..." -ForegroundColor Cyan
@@ -15,7 +15,7 @@ try {
 <toast>
     <visual>
         <binding template="ToastText02">
-            <text id="1">WindsurfChatOpen 测试</text>
+            <text id="1">EnhanceChatOpen 测试</text>
             <text id="2">如果你看到这条通知，说明桌面通知功能正常工作！</text>
         </binding>
     </visual>

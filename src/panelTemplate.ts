@@ -7,14 +7,14 @@ import { PanelId, PANEL_LABELS } from './constants';
  */
 export function getPanelHtml(version: string = '0.0.0', panelId?: PanelId): string {
   const panelLabel = panelId ? PANEL_LABELS[panelId] : '';
-  const titleText = panelId ? `ChatOpen ${panelLabel}` : 'WindsurfChat Open';
+  const titleText = panelId ? `ChatOpen ${panelLabel}` : 'EnhanceChat Open';
   const panelBadge = panelId ? `<span class="panel-badge panel-badge-${panelId.toLowerCase()}">${panelLabel}</span>` : '';
   return `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WindsurfChat</title>
+  <title>EnhanceChat</title>
   <style>
     ${getPanelStyles()}
   </style>

@@ -1,4 +1,4 @@
-# WindsurfChatOpen
+# EnhanceChatOpen
 
 让 AI 停下来听你说话 - 随时介入对话，精准反馈指令
 
@@ -49,7 +49,7 @@ Ctrl+Shift+P → Extensions: Install from VSIX...
 
 | 文件/目录 | 说明 |
 |-----------|------|
-| `.windsurfchatopen/` | 存储核心脚本和会话数据 |
+| `.EnhanceChatopen/` | 存储核心脚本和会话数据 |
 | `.windsurfrules` | 工作区规则文件，AI 自动读取并遵循 |
 
 > 💡 如果是 Git 项目，上述文件会自动添加到 `.gitignore`
@@ -81,7 +81,7 @@ Ctrl+Shift+P → Extensions: Install from VSIX...
 ┌─────────────────────────────────────────────────────────────┐
 │                     Windsurf IDE                            │
 │  ┌──────────────┐    HTTP     ┌─────────────────────────┐  │
-│  │   AI Agent   │ ◄────────► │   WindsurfChatOpen      │  │
+│  │   AI Agent   │ ◄────────► │   EnhanceChatOpen      │  │
 │  │  (Cascade)   │             │   Extension             │  │
 │  └──────────────┘             └─────────────────────────┘  │
 │         │                              │                    │
